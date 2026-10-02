@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Clinical Trial Analyser | Avin Kakkar</title>
 <meta name="description" content="Reads a ClinicalTrials.gov CSV export and counts it honestly: merges the spellings that are certainly the same, suggests the doubtful ones, and never merges on spelling alone.">
-<meta name="color-scheme" content="light">
-<meta name="theme-color" content="#f5e7df">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0D1117">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Clinical Trial Analyser">
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23f5e7df'/><path d='M8 21l5-10 5 7 3-4 3 7' fill='none' stroke='%23c2410c' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230D1117'/><path d='M8 21l5-10 5 7 3-4 3 7' fill='none' stroke='%2310B981' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -39,14 +39,14 @@
 <style>
   .cta-page {
     /* From avinkakkar.me */
-    --bg: #f5e7df;
-    --bg2: #efdcd0;
-    --card: #fbf4ef;
-    --ink: #1f1612;
-    --muted: #6e5e54;
-    --rule: rgba(31,22,18,.18);
-    --rule-soft: rgba(31,22,18,.10);
-    --accent: #c2410c;
+    --bg: #0D1117;
+    --bg2: #10151C;
+    --card: #161B22;
+    --ink: #E6EDF3;
+    --muted: #8B949E;
+    --rule: rgba(139,148,158,.24);
+    --rule-soft: rgba(139,148,158,.14);
+    --accent: #10B981;
     --head: "Space Grotesk",Inter,system-ui,sans-serif;
     --mono: "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     --sans: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
@@ -56,9 +56,9 @@
     --spring: cubic-bezier(0.25, 1, 0.5, 1);
     --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px; --s6:64px; --s7:96px;
     --radius: 16px; --radius-sm: 10px;
-    /* Warm and diffused, never a hard drop shadow */
-    --shadow: 0 1px 2px rgba(31,22,18,.05), 0 14px 40px rgba(31,22,18,.08);
-    --shadow-lift: 0 2px 6px rgba(31,22,18,.07), 0 24px 60px rgba(31,22,18,.13);
+    /* Diffused, never a hard drop shadow */
+    --shadow: 0 1px 2px rgba(0,0,0,.30), 0 14px 40px rgba(0,0,0,.35);
+    --shadow-lift: 0 2px 6px rgba(0,0,0,.35), 0 24px 60px rgba(0,0,0,.50);
 
     margin: 0; background: var(--bg); color: var(--ink);
     font-family: var(--sans); font-size: 17px; line-height: 1.6;
@@ -80,7 +80,7 @@
     transition: background-color .4s var(--spring), border-color .4s var(--spring);
   }
   .cta-page .bar.stuck {
-    background: rgba(245,231,223,.82);
+    background: rgba(13,17,23,.82);
     backdrop-filter: saturate(180%) blur(20px);
     -webkit-backdrop-filter: saturate(180%) blur(20px);
     border-bottom-color: var(--rule-soft);
@@ -102,7 +102,7 @@
     transition: color .3s var(--spring), background-color .3s var(--spring),
                 border-color .3s var(--spring);
   }
-  .cta-page .bar nav a:hover { color: var(--ink); background: rgba(31,22,18,.05); }
+  .cta-page .bar nav a:hover { color: var(--ink); background: rgba(230,237,243,.06); }
   .cta-page .bar nav .bar-cta { color: var(--accent); border-color: var(--rule); }
   .cta-page .bar nav .bar-cta:hover { background: var(--card); border-color: var(--accent); color: var(--accent); }
 
@@ -150,10 +150,9 @@
   .cta-page .btn svg { width: 16px; height: 16px; transition: transform .35s var(--spring); }
   .cta-page .btn:hover svg { transform: translateX(3px); }
   .cta-page .btn:active { transform: scale(.97); }
-  /* Card-coloured label, not the page cream: 4.76:1 against the rust, where
-     the page background would only reach 4.29:1. */
-  .cta-page .btn-primary { background: var(--accent); color: var(--card); }
-  .cta-page .btn-primary:hover { background: #a93809; box-shadow: var(--shadow); }
+  /* Page-dark label on the green: 7.5:1. */
+  .cta-page .btn-primary { background: var(--accent); color: var(--bg); }
+  .cta-page .btn-primary:hover { background: #34D399; box-shadow: var(--shadow); }
   .cta-page .btn-ghost { color: var(--ink); border-color: var(--rule); background: var(--card); }
   .cta-page .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
   .cta-page :where(a, button):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
@@ -222,7 +221,7 @@
     letter-spacing: .07em; text-transform: uppercase; padding: 5px 10px; border-radius: 999px;
     background: var(--bg2); color: var(--ink); border: 1px solid var(--rule-soft);
   }
-  .cta-page .card-tag.is-accent { background: rgba(194,65,12,.10); color: var(--accent); border-color: rgba(194,65,12,.22); }
+  .cta-page .card-tag.is-accent { background: rgba(16,185,129,.12); color: var(--accent); border-color: rgba(16,185,129,.28); }
 
   /* ------------------------------ Callout ------------------------------ */
   .cta-page .callout {
