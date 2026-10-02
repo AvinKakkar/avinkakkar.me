@@ -28,7 +28,7 @@
   --head:"Space Grotesk",Inter,system-ui,sans-serif;
   --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   --sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-  --max:1080px;
+  --max:1280px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;scroll-padding-top:76px}
@@ -84,13 +84,11 @@ nav.top .wrap{display:flex;align-items:center;justify-content:space-between;heig
 @media(max-width:420px){.links,.links.two{grid-template-columns:1fr}.lk,.lk:nth-child(n+4),.lk:nth-child(5){grid-column:auto}}
 
 /* numbers */
-.nums{display:grid;grid-template-columns:repeat(4,1fr);border-top:1.5px solid var(--ink);border-bottom:1px solid var(--rule);text-align:center}
-.num{padding:28px 16px 24px;border-left:1px solid var(--rule)}
-.num:nth-child(4n+1){border-left:0}
-.num:nth-child(n+5){border-top:1px solid var(--rule)}
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;text-align:center}
+.num{padding:26px 16px 22px;background:var(--card);border:1px solid var(--rule);border-radius:16px}
 .num b{display:block;font-family:var(--mono);font-weight:700;font-size:clamp(1.6rem,3.2vw,2.6rem);letter-spacing:-.06em;line-height:1;white-space:nowrap;color:var(--accent)}
-.num span{display:block;margin:10px auto 0;font-size:.86rem;color:var(--muted);max-width:24ch}
-@media(max-width:820px){.nums{grid-template-columns:repeat(2,1fr)}.num:nth-child(odd){border-left:0}.num:nth-child(n+3){border-top:1px solid var(--rule)}}
+.num span{display:block;margin:12px auto 0;font-size:.86rem;line-height:1.45;color:var(--muted);max-width:21ch;min-height:2.9em;text-wrap:balance}
+@media(max-width:820px){.nums{grid-template-columns:repeat(2,1fr)}}
 
 /* experience */
 .jobs{margin-top:54px;border-top:1.5px solid var(--ink)}
@@ -174,11 +172,11 @@ footer{background:var(--card);color:var(--muted);border-top:1px solid var(--rule
     <div class="wrap">
       <div class="nums reveal" aria-label="Results at a glance">
         <div class="num"><b>5+</b><span>years in strategy and research</span></div>
-        <div class="num"><b>18%</b><span>CSAT improvement from a customer service strategy study</span></div>
-        <div class="num"><b>USD 10Mn+</b><span>cost savings from go/no-go decisions on 6+ products</span></div>
-        <div class="num"><b>200+</b><span>enterprise accounts in an AI product pitch programme</span></div>
-        <div class="num"><b>500+</b><span>company profiles across 15+ global pharma markets</span></div>
-        <div class="num"><b>15%</b><span>company revenue increase from two research verticals built from zero</span></div>
+        <div class="num"><b>18%</b><span>CSAT improvement from a service strategy study</span></div>
+        <div class="num"><b>USD 10Mn+</b><span>cost savings from go/no&#8209;go product decisions</span></div>
+        <div class="num"><b>200+</b><span>enterprise accounts in an AI pitch programme</span></div>
+        <div class="num"><b>500+</b><span>company profiles across 15+ pharma markets</span></div>
+        <div class="num"><b>15%</b><span>revenue increase from two new research verticals</span></div>
         <div class="num"><b>70%+</b><span>workflow efficiency gain from automation</span></div>
         <div class="num"><b>100%</b><span>on-time delivery across 14 months</span></div>
       </div>
