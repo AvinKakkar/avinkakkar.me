@@ -43,7 +43,8 @@ h2 em,h1 em{font-style:normal;color:var(--accent)}
 section{padding:96px 0}
 
 /* nav */
-nav.top{position:sticky;top:0;z-index:40;background:rgba(13,17,23,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--rule)}
+nav.top{position:fixed;top:0;left:0;right:0;z-index:40;background:rgba(13,17,23,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--rule);transform:translateY(-100%);visibility:hidden;transition:transform .25s ease,visibility .25s}
+nav.top.show{transform:none;visibility:visible}
 nav.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
 .mark{font-family:var(--head);font-size:1.25rem;font-weight:700;letter-spacing:-.02em}
 .mark em{color:var(--accent);font-style:normal}
@@ -59,7 +60,7 @@ nav.top .wrap{display:flex;align-items:center;justify-content:space-between;heig
 @media(max-width:620px){.navr .btn{display:none}}
 
 /* hero */
-.hero{min-height:calc(100vh - 65px);min-height:calc(100svh - 65px);display:flex;align-items:center;padding:28px 0}
+.hero{min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:28px 0}
 .hero>.wrap{width:100%}
 .hero .eyebrow{font-size:.85rem;color:var(--muted);margin-bottom:clamp(8px,2vh,22px);display:block}
 .hero h1{font-size:clamp(3rem,min(10vw,13vh),7.8rem);letter-spacing:-.05em;line-height:.95}
@@ -313,7 +314,10 @@ var els = document.querySelectorAll('.reveal');
 if ('IntersectionObserver' in window) {
   var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: 0.1 });
   els.forEach(function (el) { io.observe(el); });
-} else { els.forEach(function (el) { el.classList.add('in'); }); }
+  var nav = document.querySelector('nav.top');
+  new IntersectionObserver(function (es) { nav.classList.toggle('show', !es[0].isIntersecting); }, { rootMargin: '-80px 0px 0px 0px' }).observe(document.querySelector('.hero'));
+} else { els.forEach(function (el) { el.classList.add('in'); }); document.querySelector('nav.top').classList.add('show'); }
 </script>
+<noscript><style>nav.top{transform:none;visibility:visible}</style></noscript>
 </body>
 </html>
