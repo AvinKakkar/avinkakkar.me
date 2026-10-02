@@ -59,7 +59,8 @@ nav.top .wrap{display:flex;align-items:center;justify-content:space-between;heig
 @media(max-width:620px){.navr .btn{display:none}}
 
 /* hero */
-.hero{padding:84px 0 72px}
+.hero{min-height:calc(100vh - 65px);min-height:calc(100svh - 65px);display:flex;align-items:center;padding:48px 0}
+.hero>.wrap{width:100%}
 .hero .eyebrow{font-size:.85rem;color:var(--muted);margin-bottom:22px;display:block}
 .hero h1{font-size:clamp(3rem,10vw,7.8rem);letter-spacing:-.05em;line-height:.95}
 .hero .role{margin-top:26px;font-family:var(--head);font-weight:500;font-size:clamp(1.3rem,2.8vw,1.95rem);letter-spacing:-.02em;line-height:1.2;max-width:26ch}
