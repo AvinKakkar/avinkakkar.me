@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Clinical Trial Analyser | Avin Kakkar</title>
+<meta name="description" content="Reads a ClinicalTrials.gov CSV export and counts it honestly: merges the spellings that are certainly the same, suggests the doubtful ones, and never merges on spelling alone.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f5e7df">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Clinical Trial Analyser">
+<meta property="og:description" content="Counts clinical trial data honestly. It merges only the name spellings it is certain about, shows its working, and lets you undo any of it.">
+<meta property="og:url" content="https://avinkakkar.me/projects/clinicaltrailsanalyser/">
+<meta property="og:image" content="https://avinkakkar.me/projects/clinicaltrailsanalyser/app-review.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23f5e7df'/><path d='M8 21l5-10 5 7 3-4 3 7' fill='none' stroke='%23c2410c' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,600&display=swap" rel="stylesheet">
+
+<!--
+  Self-contained on purpose: all CSS and JS are in this file, so it drops into
+  your site without touching its stylesheet. Every rule is scoped under
+  .cta-page, so nothing leaks either way.
+
+  Tokens below are read straight off avinkakkar.me, so this page and your
+  landing page share one palette and one pair of typefaces.
+
+  Three links go back to your site and are the only ones to change if the paths
+  move: the wordmark, the Back link, and the button at the foot, all href="/".
+
+  The three "Open the app" buttons point at the Streamlit app on its own address
+  and open in a new tab, so a visitor keeps this page behind them.
+-->
+<style>
+  .cta-page {
+    /* From avinkakkar.me */
+    --bg: #f5e7df;
+    --bg2: #efdcd0;
+    --card: #fbf4ef;
+    --ink: #1f1612;
+    --muted: #6e5e54;
+    --rule: rgba(31,22,18,.18);
+    --rule-soft: rgba(31,22,18,.10);
+    --accent: #c2410c;
+    --serif: Newsreader, Georgia, "Times New Roman", serif;
+    --sans: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --max: 1080px;
+
+    /* Apple-ish motion and spacing, kept from the previous pass */
+    --spring: cubic-bezier(0.25, 1, 0.5, 1);
+    --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px; --s6:64px; --s7:96px;
+    --radius: 16px; --radius-sm: 10px;
+    /* Warm and diffused, never a hard drop shadow */
+    --shadow: 0 1px 2px rgba(31,22,18,.05), 0 14px 40px rgba(31,22,18,.08);
+    --shadow-lift: 0 2px 6px rgba(31,22,18,.07), 0 24px 60px rgba(31,22,18,.13);
+
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); font-size: 17px; line-height: 1.6;
+    letter-spacing: -0.011em; -webkit-font-smoothing: antialiased;
+  }
+  .cta-page *, .cta-page *::before, .cta-page *::after { box-sizing: border-box; }
+  .cta-page .shell { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 var(--s3); }
+
+  .cta-page .skip {
+    position: absolute; left: -9999px; top: 0; z-index: 99;
+    background: var(--accent); color: var(--card);
+    padding: var(--s2) var(--s3); border-radius: 0 0 var(--radius-sm) 0; font-weight: 600;
+  }
+  .cta-page .skip:focus { left: 0; }
+
+  /* --------------------------------- Bar ------------------------------- */
+  .cta-page .bar {
+    position: sticky; top: 0; z-index: 20; border-bottom: 1px solid transparent;
+    transition: background-color .4s var(--spring), border-color .4s var(--spring);
+  }
+  .cta-page .bar.stuck {
+    background: rgba(245,231,223,.82);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom-color: var(--rule-soft);
+  }
+  .cta-page .bar-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--s3); min-height: 60px;
+  }
+  .cta-page .wordmark {
+    color: var(--ink); text-decoration: none;
+    font-family: var(--serif); font-size: 1.22rem; letter-spacing: -.01em;
+  }
+  .cta-page .wordmark i { font-style: italic; color: var(--accent); }
+  .cta-page .bar nav { display: flex; align-items: center; gap: var(--s1); }
+  .cta-page .bar nav a {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--s2);
+    color: var(--muted); text-decoration: none; font-size: 15px; font-weight: 500;
+    border-radius: 999px; border: 1px solid transparent;
+    transition: color .3s var(--spring), background-color .3s var(--spring),
+                border-color .3s var(--spring);
+  }
+  .cta-page .bar nav a:hover { color: var(--ink); background: rgba(31,22,18,.05); }
+  .cta-page .bar nav .bar-cta { color: var(--accent); border-color: var(--rule); }
+  .cta-page .bar nav .bar-cta:hover { background: var(--card); border-color: var(--accent); color: var(--accent); }
+
+  /* Wordmark plus two nav items will not fit a phone; the section link is
+     also reachable by scrolling, so it is the one that goes. */
+  @media (max-width: 460px) {
+    .cta-page .bar nav a:not(.bar-cta) { display: none; }
+    .cta-page .wordmark { font-size: 1.1rem; }
+  }
+
+  /* -------------------------------- Hero ------------------------------- */
+  .cta-page .hero { padding: clamp(var(--s6), 8vw, 104px) 0 var(--s5); }
+  .cta-page .backlink {
+    display: inline-flex; align-items: center; gap: 7px; min-height: 44px;
+    color: var(--muted); text-decoration: none; font-size: 15px; font-weight: 500;
+    transition: color .3s var(--spring);
+  }
+  .cta-page .backlink:hover { color: var(--accent); }
+  .cta-page .backlink svg { width: 15px; height: 15px; transition: transform .3s var(--spring); }
+  .cta-page .backlink:hover svg { transform: translateX(-3px); }
+
+  .cta-page h1 {
+    margin: var(--s2) 0 var(--s3);
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(2.6rem, 6.4vw, 4.2rem); line-height: 1.04;
+    letter-spacing: -.022em; max-width: 18ch;
+  }
+  .cta-page h1 i { font-style: italic; color: var(--accent); }
+  .cta-page .lede {
+    margin: 0 0 var(--s4); max-width: 60ch;
+    font-size: clamp(1.03rem, 2vw, 1.2rem); color: var(--muted);
+  }
+
+  /* ------------------------------ Buttons ------------------------------ */
+  .cta-page .cta-row { display: flex; flex-wrap: wrap; gap: var(--s2); align-items: center; }
+  .cta-page .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    min-height: 46px; padding: 0 var(--s3);
+    border-radius: 999px; border: 1px solid transparent;
+    font-size: 16px; font-weight: 600; letter-spacing: -.01em;
+    text-decoration: none; cursor: pointer;
+    transition: transform .35s var(--spring), box-shadow .35s var(--spring),
+                background-color .35s var(--spring), border-color .35s var(--spring);
+  }
+  .cta-page .btn svg { width: 16px; height: 16px; transition: transform .35s var(--spring); }
+  .cta-page .btn:hover svg { transform: translateX(3px); }
+  .cta-page .btn:active { transform: scale(.97); }
+  /* Card-coloured label, not the page cream: 4.76:1 against the rust, where
+     the page background would only reach 4.29:1. */
+  .cta-page .btn-primary { background: var(--accent); color: var(--card); }
+  .cta-page .btn-primary:hover { background: #a93809; box-shadow: var(--shadow); }
+  .cta-page .btn-ghost { color: var(--ink); border-color: var(--rule); background: var(--card); }
+  .cta-page .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .cta-page :where(a, button):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* ------------------------------ Sections ----------------------------- */
+  .cta-page .section { padding: clamp(var(--s6), 8vw, 104px) 0; }
+  .cta-page .section.pt-0 { padding-top: 0; }
+  .cta-page .band { background: var(--bg2); border-top: 1px solid var(--rule-soft); border-bottom: 1px solid var(--rule-soft); }
+  .cta-page h2 {
+    margin: 0 0 var(--s3); font-family: var(--serif); font-weight: 400;
+    font-size: clamp(1.95rem, 4.2vw, 2.9rem); line-height: 1.1;
+    letter-spacing: -.018em; max-width: 20ch;
+  }
+  .cta-page h2 i { font-style: italic; color: var(--accent); }
+  .cta-page h3 { margin: 0 0 var(--s1); font-size: 1.08rem; font-weight: 600; letter-spacing: -.012em; }
+  /* Muted, not rust: the accent only clears 4.29:1 on cream, which is fine for
+     display type but not for a 13px label. */
+  .cta-page .eyebrow {
+    margin: 0 0 var(--s2); font-size: 12.5px; font-weight: 600;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
+  }
+  .cta-page .section-lede { margin: 0 0 var(--s5); max-width: 62ch; font-size: clamp(1rem, 1.8vw, 1.13rem); color: var(--muted); }
+  .cta-page code {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: .86em; background: var(--card); color: var(--accent);
+    padding: .15em .45em; border-radius: 6px; border: 1px solid var(--rule-soft);
+    white-space: nowrap;
+  }
+
+  /* ---------------------------- Screenshots ---------------------------- */
+  .cta-page figure { margin: 0; }
+  .cta-page .shot {
+    border-radius: var(--radius); overflow: hidden;
+    border: 1px solid var(--rule); box-shadow: var(--shadow); background: var(--card);
+    transition: transform .6s var(--spring), box-shadow .6s var(--spring);
+  }
+  .cta-page .shot:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+  .cta-page .shot img { display: block; width: 100%; height: auto; }
+  .cta-page .shot-lead { margin-bottom: var(--s6); }
+  .cta-page figcaption { margin-top: var(--s2); font-size: 14.5px; color: var(--muted); }
+  .cta-page .gallery { display: grid; gap: var(--s4); grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
+  @media (max-width: 760px) { .cta-page .gallery { grid-template-columns: 1fr; } }
+
+  /* ------------------------------- Stats ------------------------------- */
+  .cta-page .stats { display: grid; gap: var(--s2); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .cta-page .stat { padding: var(--s3); border: 1px solid var(--rule); border-radius: var(--radius); background: var(--card); }
+  .cta-page .stat-n {
+    display: block; font-family: var(--serif); font-weight: 400;
+    font-size: clamp(2.3rem, 5vw, 3.1rem); line-height: 1;
+    letter-spacing: -.02em; color: var(--accent); font-variant-numeric: tabular-nums;
+  }
+  .cta-page .stat-n .unit { font-size: .5em; }
+  .cta-page .stat-l { display: block; margin-top: var(--s2); font-size: 15px; color: var(--muted); }
+
+  /* ------------------------------- Cards ------------------------------- */
+  .cta-page .cards { display: grid; gap: var(--s2); margin-bottom: var(--s5); grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
+  .cta-page .card {
+    padding: var(--s4) var(--s3) var(--s3);
+    border: 1px solid var(--rule); border-radius: var(--radius); background: var(--card);
+    transition: transform .5s var(--spring), border-color .5s var(--spring), box-shadow .5s var(--spring);
+  }
+  .cta-page .card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .cta-page .card p { margin: 0; color: var(--muted); font-size: 15.5px; }
+  .cta-page .card-tag {
+    display: inline-block; margin-bottom: var(--s2); font-size: 11.5px; font-weight: 700;
+    letter-spacing: .07em; text-transform: uppercase; padding: 5px 10px; border-radius: 999px;
+    background: var(--bg2); color: var(--ink); border: 1px solid var(--rule-soft);
+  }
+  .cta-page .card-tag.is-accent { background: rgba(194,65,12,.10); color: var(--accent); border-color: rgba(194,65,12,.22); }
+
+  /* ------------------------------ Callout ------------------------------ */
+  .cta-page .callout {
+    padding: var(--s4); margin-bottom: var(--s5); border-radius: var(--radius);
+    border: 1px solid var(--rule); border-left: 3px solid var(--accent); background: var(--card);
+  }
+  .cta-page .callout h3 { margin-bottom: var(--s2); }
+  .cta-page .callout p { margin: 0; color: var(--muted); max-width: 70ch; }
+
+  /* ------------------------------- Specs ------------------------------- */
+  .cta-page .specs { display: grid; gap: var(--s2); margin: 0 0 var(--s2); grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+  .cta-page .spec { padding: var(--s2) var(--s3); border-radius: var(--radius-sm); background: var(--card); border: 1px solid var(--rule-soft); }
+  .cta-page .spec dt { font-size: 13px; color: var(--muted); }
+  .cta-page .spec dd {
+    margin: 4px 0 0; font-family: var(--serif); font-size: 1.6rem; font-weight: 400;
+    letter-spacing: -.01em; font-variant-numeric: tabular-nums;
+  }
+  .cta-page .fineprint { margin: 0 0 var(--s5); font-size: 14px; color: var(--muted); max-width: 62ch; }
+
+  /* ------------------------------- Stack ------------------------------- */
+  .cta-page .stack { display: flex; flex-wrap: wrap; gap: var(--s1); list-style: none; padding: 0; margin: 0 0 var(--s5); }
+  .cta-page .stack li { font-size: 14px; color: var(--muted); padding: 7px 14px; border-radius: 999px; border: 1px solid var(--rule); background: var(--card); }
+
+  /* ------------------------------- Footer ------------------------------ */
+  .cta-page .foot { border-top: 1px solid var(--rule-soft); padding: var(--s5) 0; }
+  .cta-page .foot-inner { display: flex; flex-wrap: wrap; gap: var(--s2); justify-content: space-between; font-size: 14px; color: var(--muted); }
+
+  /* ------------------------------- Motion ------------------------------ */
+  .cta-page .reveal { opacity: 0; transform: translateY(14px); }
+  .cta-page .reveal.in {
+    opacity: 1; transform: none;
+    transition: opacity .7s var(--spring) var(--d, 0s), transform .7s var(--spring) var(--d, 0s);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cta-page .reveal, .cta-page .reveal.in { opacity: 1; transform: none; transition: none; }
+    .cta-page .btn, .cta-page .card, .cta-page .shot { transition: none; }
+  }
+</style>
+</head>
+
+<body class="cta-page">
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar" id="bar">
+  <div class="shell bar-inner">
+    <a class="wordmark" href="/">Avin <i>Kakkar</i></a>
+    <nav aria-label="Page">
+      <a href="#how">How it works</a>
+      <a class="bar-cta" href="https://clinical-trails-analyser.streamlit.app" target="_blank" rel="noopener">Open the app</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero">
+    <div class="shell">
+      <a class="backlink reveal" href="/">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H4M7.5 4l-4 4 4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back
+      </a>
+      <h1 class="reveal" style="--d:.06s">Clinical Trial <i>Analyser</i></h1>
+      <p class="lede reveal" style="--d:.12s">
+        Upload a CSV export from ClinicalTrials.gov and get the whole dataset broken
+        down: phases, status, study design, who is enrolled, where the sites are, and
+        who is running them. The hard part is not the charts. It is counting the
+        names correctly.
+      </p>
+      <div class="cta-row reveal" style="--d:.18s">
+        <a class="btn btn-primary" href="https://clinical-trails-analyser.streamlit.app" target="_blank" rel="noopener">
+          Open the app
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="btn btn-ghost" href="#how">How it works</a>
+      </div>
+      <p class="fineprint reveal" style="--d:.24s; margin-bottom:0">
+        No sign-up. Sample data is one click. Nothing you upload is stored.
+      </p>
+    </div>
+  </section>
+
+  <section class="section pt-0" aria-label="The app">
+    <div class="shell">
+      <figure class="reveal shot-lead">
+        <div class="shot">
+          <img src="app-charts.png" alt="The analyser with data loaded: a filter sidebar on the left, a row of section tabs, and a donut chart of trial status with every slice labelled."
+               width="2968" height="1770" loading="lazy" decoding="async">
+        </div>
+        <figcaption>Filters live in the sidebar and apply to every section at once.</figcaption>
+      </figure>
+
+      <div class="stats">
+        <div class="stat reveal">
+          <span class="stat-n">100<span class="unit">%</span></span>
+          <span class="stat-l">Precision on the benchmark. Not one wrong merge, in any run.</span>
+        </div>
+        <div class="stat reveal" style="--d:.06s">
+          <span class="stat-n">2,131</span>
+          <span class="stat-l">Trials in the real export it is tested against, not just made-up data.</span>
+        </div>
+        <div class="stat reveal" style="--d:.12s">
+          <span class="stat-n">0.4<span class="unit">s</span></span>
+          <span class="stat-l">To group 10,000 distinct names. It stays usable well past that.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section band" id="how" aria-labelledby="how-h">
+    <div class="shell">
+      <p class="eyebrow reveal">The hard part</p>
+      <h2 id="how-h" class="reveal" style="--d:.05s">The same thing, written <i>ten ways</i></h2>
+      <p class="section-lede reveal" style="--d:.1s">
+        In trial data one sponsor appears as <code>Pfizer</code>, <code>Pfizer Inc</code>
+        and <code>PFIZER</code>. One condition appears as <code>NSCLC</code> and
+        <code>Non-Small Cell Lung Cancer</code>. Count them as written and every
+        total is wrong.
+      </p>
+
+      <div class="cards">
+        <article class="card reveal">
+          <span class="card-tag is-accent">Merged automatically</span>
+          <h3>Only when it is certain</h3>
+          <p>
+            Names merge on their own only when they are identical once case,
+            punctuation and company suffixes are stripped, or when they contain
+            exactly the same words.
+          </p>
+        </article>
+        <article class="card reveal" style="--d:.06s">
+          <span class="card-tag">Suggested, never merged</span>
+          <h3>Lookalikes wait for you</h3>
+          <p>
+            Anything that merely <em>looks</em> similar is listed as a possible
+            duplicate. You tick the ones you agree with. Nothing happens until
+            you say so.
+          </p>
+        </article>
+        <article class="card reveal" style="--d:.12s">
+          <span class="card-tag">Optional</span>
+          <h3>An AI breaks the ties</h3>
+          <p>
+            Turn it on and a model judges the doubtful pairs, reporting its own
+            confidence. Every merge it makes is flagged for review. With no
+            answer, nothing merges.
+          </p>
+        </article>
+      </div>
+
+      <figure class="reveal shot-lead">
+        <div class="shot">
+          <img src="app-review.png" alt="The sponsor review table: one automatic grouping of Hoffmann-La Roche spellings marked Same words, and two possible duplicates left unmerged, Pfizer against Pfizer USA and Merck against Merck Sharp and Dohme."
+               width="2968" height="1770" loading="lazy" decoding="async">
+        </div>
+        <figcaption>
+          The review table, with the reasoning visible. <strong>Pfizer</strong> and
+          <strong>Pfizer USA</strong> were left apart, because a longer name is
+          often a different entity.
+        </figcaption>
+      </figure>
+
+      <div class="callout reveal">
+        <h3>Why it never matches on spelling alone</h3>
+        <p>
+          As text, <code>Type 1 Diabetes</code> and <code>Type 2 Diabetes</code> are
+          over 90% identical. So are <code>Hepatitis B</code> and <code>Hepatitis C</code>.
+          Any tool that merges on character similarity will eventually fuse two
+          different diseases and never tell you. This one refuses to use similarity
+          as evidence of sameness, only as a reason to ask.
+        </p>
+      </div>
+
+      <dl class="specs">
+        <div class="spec reveal"><dt>Recall, sponsors</dt><dd>63.6%</dd></div>
+        <div class="spec reveal" style="--d:.04s"><dt>Recall, conditions</dt><dd>54.2%</dd></div>
+        <div class="spec reveal" style="--d:.08s"><dt>On hand-labelled real pairs</dt><dd>83.8%</dd></div>
+        <div class="spec reveal" style="--d:.12s"><dt>Wrong merges</dt><dd>0</dd></div>
+      </dl>
+      <p class="fineprint reveal" style="margin-bottom:0">
+        The rest are not lost. They are offered to you as possible duplicates.
+        The benchmark fails the build if a single wrong merge ever appears.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="inside-h">
+    <div class="shell">
+      <p class="eyebrow reveal">Inside it</p>
+      <h2 id="inside-h" class="reveal" style="--d:.05s">Five views of <i>one dataset</i></h2>
+      <p class="section-lede reveal" style="--d:.1s">
+        Overview, study, patients, geography and sponsors. The filters apply across
+        all of them, and every table on every tab exports as CSV.
+      </p>
+
+      <div class="gallery">
+        <figure class="reveal">
+          <div class="shot">
+            <img src="app-conditions.png" alt="A horizontal bar chart of the top conditions studied, after grouping."
+                 width="2968" height="1770" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Conditions, counted after grouping, so one disease is one bar.</figcaption>
+        </figure>
+        <figure class="reveal" style="--d:.06s">
+          <div class="shot">
+            <img src="app-map.png" alt="Trials per country as a bar chart and a world heat map."
+                 width="2968" height="1770" loading="lazy" decoding="async">
+          </div>
+          <figcaption>Countries read out of the free-text site list, with a toggle for trials or sites.</figcaption>
+        </figure>
+      </div>
+
+      <ul class="stack reveal" aria-label="Built with">
+        <li>Python</li><li>pandas</li><li>Plotly</li><li>RapidFuzz</li>
+        <li>Streamlit</li><li>Groq / Gemini / OpenAI</li>
+      </ul>
+
+      <div class="cta-row reveal">
+        <a class="btn btn-primary" href="https://clinical-trails-analyser.streamlit.app" target="_blank" rel="noopener">
+          Try it with sample data
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a class="btn btn-ghost" href="/">Back to avinkakkar.me</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="shell foot-inner">
+    <span>&copy; <span id="yr">2026</span> Avin Kakkar</span>
+    <span>Built by hand. No tracking on this page.</span>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  const reveals = document.querySelectorAll('.reveal');
+  if (matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+    const io = new IntersectionObserver((es) => {
+      for (const e of es) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    }, { rootMargin: '0px 0px -12% 0px' });
+    reveals.forEach(el => io.observe(el));
+  } else {
+    reveals.forEach(el => el.classList.add('in'));
+  }
+
+  const bar = document.getElementById('bar');
+  const onScroll = () => bar.classList.toggle('stuck', window.scrollY > 8);
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+</script>
+
+</body>
+</html>
