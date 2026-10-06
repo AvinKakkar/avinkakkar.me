@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Clinical Trial Analyser | Avin Kakkar</title>
-<meta name="description" content="Reads a ClinicalTrials.gov CSV export and counts it honestly: merges the spellings that are certainly the same, suggests the doubtful ones, and never merges on spelling alone.">
+<title>Voice of Customer Analyser | Avin Kakkar</title>
+<meta name="description" content="Gathers a brand's public reviews from app stores and review sites, groups them into themes you approve, and reports what customers complain about, with AI only where it earns its place.">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0D1117">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Clinical Trial Analyser">
-<meta property="og:description" content="Counts clinical trial data honestly. It merges only the name spellings it is certain about, shows its working, and lets you undo any of it.">
-<meta property="og:url" content="https://avinkakkar.me/projects/clinicaltrailsanalyser/">
-<meta property="og:image" content="https://avinkakkar.me/projects/clinicaltrailsanalyser/og-card.jpg">
+<meta property="og:title" content="Voice of Customer Analyser">
+<meta property="og:description" content="Turns a brand's public reviews into themes, sentiment and a shareable report. Sentiment, themes and classification run without a model; AI is optional.">
+<meta property="og:url" content="https://avinkakkar.me/projects/voiceofcustomer/">
+<meta property="og:image" content="https://avinkakkar.me/projects/voiceofcustomer/og-card.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -33,7 +33,7 @@
   Three links go back to your site and are the only ones to change if the paths
   move: the wordmark, the Back link, and the button at the foot, all href="/".
 
-  The three "Open the app" buttons point at the Streamlit app on its own address
+  The "Open the app" buttons point at the Streamlit app on its own address
   and open in a new tab, so a visitor keeps this page behind them.
 -->
 <style>
@@ -271,7 +271,7 @@
     <a class="wordmark" href="/">Avin <i>Kakkar</i></a>
     <nav aria-label="Page">
       <a href="#how">How it works</a>
-      <a class="bar-cta" href="https://clinical-trails-analyser.streamlit.app" target="_blank" rel="noopener">Open the app</a>
+      <a class="bar-cta" href="https://voc-analyser.streamlit.app" target="_blank" rel="noopener">Open the app</a>
     </nav>
   </div>
 </header>
@@ -284,22 +284,23 @@
         <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H4M7.5 4l-4 4 4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Back
       </a>
-      <h1 class="reveal" style="--d:.06s">Clinical Trial <i>Analyser</i></h1>
+      <h1 class="reveal" style="--d:.06s">Voice of Customer <i>Analyser</i></h1>
       <p class="lede reveal" style="--d:.12s">
-        Upload a CSV export from ClinicalTrials.gov and get the whole dataset broken
-        down: phases, status, study design, who is enrolled, where the sites are, and
-        who is running them. The hard part is not the charts. It is counting the
-        names correctly.
+        Type a brand name and it gathers that brand's public reviews from app stores
+        and review sites, groups them into themes you approve, and shows what
+        customers complain about and what they praise. The hard part is not
+        collecting reviews. It is analysing them without paying a model to read
+        every single one.
       </p>
       <div class="cta-row reveal" style="--d:.18s">
-        <a class="btn btn-primary" href="https://clinical-trails-analyser.streamlit.app" target="_blank" rel="noopener">
+        <a class="btn btn-primary" href="https://voc-analyser.streamlit.app" target="_blank" rel="noopener">
           Open the app
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
         <a class="btn btn-ghost" href="#how">How it works</a>
       </div>
       <p class="fineprint reveal" style="--d:.24s; margin-bottom:0">
-        No sign-up. Sample data is one click. Nothing you upload is stored.
+        No sign-up and no API key needed. AI is optional, and you bring your own key.
       </p>
     </div>
   </section>
@@ -308,24 +309,24 @@
     <div class="shell">
       <figure class="reveal shot-lead">
         <div class="shot">
-          <img src="app-charts.webp" alt="The analyser with data loaded: a filter sidebar on the left, a row of section tabs, and a donut chart of trial status with every slice labelled."
-               width="2160" height="1288" loading="lazy" decoding="async">
+          <img src="app-report.webp" alt="The report for 1,399 Nike and Adidas reviews: a source filter, headline numbers, a table of eight themes with share, average rating and sentiment, and the start of a sentiment chart."
+               width="2160" height="1265" loading="lazy" decoding="async">
         </div>
-        <figcaption>Filters live in the sidebar and apply to every section at once.</figcaption>
+        <figcaption>Every theme with its share, average rating and sentiment. Filter the sources and the whole report follows.</figcaption>
       </figure>
 
       <div class="stats">
         <div class="stat reveal">
-          <span class="stat-n">100<span class="unit">%</span></span>
-          <span class="stat-l">Precision on the benchmark. Not one wrong merge, in any run.</span>
+          <span class="stat-n">1,200</span>
+          <span class="stat-l">Reviews for one brand from six store apps, collected in about 20 seconds.</span>
         </div>
         <div class="stat reveal" style="--d:.06s">
-          <span class="stat-n">2,131</span>
-          <span class="stat-l">Trials in the real export it is tested against, not just made-up data.</span>
+          <span class="stat-n">8</span>
+          <span class="stat-l">Ways in: two app stores, three review sites, Reddit, any page with review markup, and your own file.</span>
         </div>
         <div class="stat reveal" style="--d:.12s">
-          <span class="stat-n">0.4<span class="unit">s</span></span>
-          <span class="stat-l">To group 10,000 distinct names. It stays usable well past that.</span>
+          <span class="stat-n">0</span>
+          <span class="stat-l">AI calls needed. Sentiment, themes and classification all run without a model.</span>
         </div>
       </div>
     </div>
@@ -334,76 +335,74 @@
   <section class="section band" id="how" aria-labelledby="how-h">
     <div class="shell">
       <p class="eyebrow reveal">The hard part</p>
-      <h2 id="how-h" class="reveal" style="--d:.05s">The same thing, written <i>ten ways</i></h2>
+      <h2 id="how-h" class="reveal" style="--d:.05s">AI only where it <i>earns its place</i></h2>
       <p class="section-lede reveal" style="--d:.1s">
-        In trial data one sponsor appears as <code>Pfizer</code>, <code>Pfizer Inc</code>
-        and <code>PFIZER</code>. One condition appears as <code>NSCLC</code> and
-        <code>Non-Small Cell Lung Cancer</code>. Count them as written and every
-        total is wrong.
+        Sending every review to a language model is slow, costs money on every run,
+        and gives a different answer each time. So the model is the last step,
+        not the first. Most of the work is done by rules you can read and change.
       </p>
 
       <div class="cards">
         <article class="card reveal">
-          <span class="card-tag is-accent">Merged automatically</span>
-          <h3>Only when it is certain</h3>
+          <span class="card-tag is-accent">No AI</span>
+          <h3>Sentiment from the stars</h3>
           <p>
-            Names merge on their own only when they are identical once case,
-            punctuation and company suffixes are stripped, or when they contain
-            exactly the same words.
+            A one or two star review is negative and a four or five is positive.
+            Posts with no rating, such as Reddit threads, are scored by a
+            rule-based text scorer instead.
           </p>
         </article>
         <article class="card reveal" style="--d:.06s">
-          <span class="card-tag">Suggested, never merged</span>
-          <h3>Lookalikes wait for you</h3>
+          <span class="card-tag">You decide</span>
+          <h3>Themes you approve</h3>
           <p>
-            Anything that merely <em>looks</em> similar is listed as a possible
-            duplicate. You tick the ones you agree with. Nothing happens until
-            you say so.
+            Keyword topics are suggested in about a second, or one AI call suggests
+            named themes. You rename them, edit the keywords, approve, and save the
+            list to reuse next month.
           </p>
         </article>
         <article class="card reveal" style="--d:.12s">
           <span class="card-tag">Optional</span>
-          <h3>An AI breaks the ties</h3>
+          <h3>AI for the leftovers</h3>
           <p>
-            Turn it on and a model judges the doubtful pairs, reporting its own
-            confidence. Every merge it makes is flagged for review. With no
-            answer, nothing merges.
+            Keywords place each review first. Only the reviews no keyword fits go
+            to the model, 80 at a time, and every row records which method
+            placed it.
           </p>
         </article>
       </div>
 
       <figure class="reveal shot-lead">
         <div class="shot">
-          <img src="app-review.webp" alt="The sponsor review table: one automatic grouping of Hoffmann-La Roche spellings marked Same words, and two possible duplicates left unmerged, Pfizer against Pfizer USA and Merck against Merck Sharp and Dohme."
-               width="2160" height="1288" loading="lazy" decoding="async">
+          <img src="app-sentiment.webp" alt="A stacked bar chart of sentiment by theme. Returns and refunds is the most negative theme at the top, positive experiences the least negative at the bottom."
+               width="2160" height="1289" loading="lazy" decoding="async">
         </div>
         <figcaption>
-          The review table, with the reasoning visible. <strong>Pfizer</strong> and
-          <strong>Pfizer USA</strong> were left apart, because a longer name is
-          often a different entity.
+          Sentiment by theme, sorted so the most negative theme sits at the top.
+          Here, <strong>returns and refunds</strong> is 95% negative across both brands.
         </figcaption>
       </figure>
 
       <div class="callout reveal">
-        <h3>Why it never matches on spelling alone</h3>
+        <h3>Why it does not get round bot checks</h3>
         <p>
-          As text, <code>Type 1 Diabetes</code> and <code>Type 2 Diabetes</code> are
-          over 90% identical. So are <code>Hepatitis B</code> and <code>Hepatitis C</code>.
-          Any tool that merges on character similarity will eventually fuse two
-          different diseases and never tell you. This one refuses to use similarity
-          as evidence of sameness, only as a reason to ask.
+          Trustpilot, G2, Capterra, Yelp and Glassdoor block automated visitors. The
+          app does not try to get past them. It says the site is blocked and asks
+          for an export to upload instead, so every review in the dataset was
+          collected the way the site allows.
         </p>
       </div>
 
       <dl class="specs">
-        <div class="spec reveal"><dt>Recall, sponsors</dt><dd>63.6%</dd></div>
-        <div class="spec reveal" style="--d:.04s"><dt>Recall, conditions</dt><dd>54.2%</dd></div>
-        <div class="spec reveal" style="--d:.08s"><dt>On hand-labelled real pairs</dt><dd>83.8%</dd></div>
-        <div class="spec reveal" style="--d:.12s"><dt>Wrong merges</dt><dd>0</dd></div>
+        <div class="spec reveal"><dt>AI calls, collection</dt><dd>0</dd></div>
+        <div class="spec reveal" style="--d:.04s"><dt>AI calls, sentiment</dt><dd>0</dd></div>
+        <div class="spec reveal" style="--d:.08s"><dt>AI calls, theme ideas</dt><dd>0 or 1</dd></div>
+        <div class="spec reveal" style="--d:.12s"><dt>AI calls, leftovers</dt><dd>1 per 80</dd></div>
       </dl>
       <p class="fineprint reveal" style="margin-bottom:0">
-        The rest are not lost. They are offered to you as possible duplicates.
-        The benchmark fails the build if a single wrong merge ever appears.
+        Keyword matching misses paraphrases, so the app always shows how many
+        reviews keywords placed, how many the model placed, and how many are
+        still unmatched.
       </p>
     </div>
   </section>
@@ -411,46 +410,48 @@
   <section class="section" aria-labelledby="inside-h">
     <div class="shell">
       <p class="eyebrow reveal">Inside it</p>
-      <h2 id="inside-h" class="reveal" style="--d:.05s">Five views of <i>one dataset</i></h2>
+      <h2 id="inside-h" class="reveal" style="--d:.05s">From a brand name to <i>a report</i></h2>
       <p class="section-lede reveal" style="--d:.1s">
-        Overview, study, patients, geography and sponsors. The filters apply across
-        all of them, and every table on every tab exports as CSV.
+        Pick countries for the app stores, compare two periods or two brands on the
+        same themes, read example quotes for each theme, and export the lot as an
+        HTML report, Excel or CSV.
       </p>
 
       <div class="gallery">
         <figure class="reveal">
           <div class="shot">
-            <img src="app-conditions.webp" alt="A horizontal bar chart of the top conditions studied, after grouping."
-                 width="2160" height="1288" loading="lazy" decoding="async">
+            <img src="app-collect.webp" alt="Brand search for Nike: the brand name, a country picker, the website domain, and a checklist of the Google Play apps, App Store apps and Reddit feed it found."
+                 width="2160" height="1289" loading="lazy" decoding="async">
           </div>
-          <figcaption>Conditions, counted after grouping, so one disease is one bar.</figcaption>
+          <figcaption>Brand search finds the apps and review pages. You tick the ones that belong.</figcaption>
         </figure>
         <figure class="reveal" style="--d:.06s">
           <div class="shot">
-            <img src="app-map.webp" alt="Trials per country as a bar chart and a world heat map."
-                 width="2160" height="1288" loading="lazy" decoding="async">
+            <img src="app-compare.webp" alt="Adidas and Nike compared on one theme list: share and percent negative for each brand, the change in points, and a grouped bar chart."
+                 width="2160" height="1289" loading="lazy" decoding="async">
           </div>
-          <figcaption>Countries read out of the free-text site list, with a toggle for trials or sites.</figcaption>
+          <figcaption>Two brands on one theme list, with the shift in each theme in points.</figcaption>
         </figure>
       </div>
 
       <ul class="stack reveal" aria-label="Built with">
-        <li>Python</li><li>pandas</li><li>Plotly</li><li>RapidFuzz</li>
-        <li>Streamlit</li><li>Groq / Gemini / OpenAI</li>
+        <li>Python</li><li>pandas</li><li>Plotly</li><li>scikit-learn</li>
+        <li>VADER</li><li>Streamlit</li><li>Gemini (optional)</li>
       </ul>
 
       <div class="cta-row reveal">
-        <a class="btn btn-primary" href="https://clinical-trails-analyser.streamlit.app" target="_blank" rel="noopener">
-          Try it with sample data
+        <a class="btn btn-primary" href="https://voc-analyser.streamlit.app" target="_blank" rel="noopener">
+          Try it with any brand
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
-        <a class="btn btn-ghost" href="/projects/voiceofcustomer/">Next project: Voice of Customer Analyser</a>
+        <a class="btn btn-ghost" href="/projects/clinicaltrailsanalyser/">Next project: Clinical Trial Analyser</a>
         <a class="btn btn-ghost" href="/">Back to avinkakkar.me</a>
       </div>
     </div>
   </section>
 
 </main>
+
 
 <footer class="foot">
   <div class="shell foot-inner">
