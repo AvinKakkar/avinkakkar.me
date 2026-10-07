@@ -193,7 +193,7 @@
   .cta-page .shot img { display: block; width: 100%; height: auto; }
   .cta-page .shot-lead { margin-bottom: var(--s6); }
   .cta-page figcaption { margin-top: var(--s2); font-size: 14.5px; color: var(--muted); }
-  .cta-page .gallery { display: grid; gap: var(--s4); grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
+  .cta-page .gallery { display: grid; gap: var(--s4); margin-bottom: var(--s5); grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
   @media (max-width: 760px) { .cta-page .gallery { grid-template-columns: 1fr; } }
 
   /* ------------------------------- Stats ------------------------------- */
@@ -321,8 +321,8 @@
           <span class="stat-l">Reviews for one brand from six store apps, collected in about 20 seconds.</span>
         </div>
         <div class="stat reveal" style="--d:.06s">
-          <span class="stat-n">8</span>
-          <span class="stat-l">Ways in: two app stores, three review sites, Reddit, any page with review markup, and your own file.</span>
+          <span class="stat-n">7</span>
+          <span class="stat-l">Ways in: two app stores, Sitejabber, PissedConsumer, Reddit, any page with review markup, and your own file.</span>
         </div>
         <div class="stat reveal" style="--d:.12s">
           <span class="stat-n">0</span>
@@ -417,6 +417,36 @@
         HTML report, Excel or CSV.
       </p>
 
+      <div class="cards">
+        <article class="card reveal">
+          <span class="card-tag is-accent">No AI</span>
+          <h3>Fill the gaps yourself</h3>
+          <p>
+            The app lists the most common words in reviews no keyword placed. Pick
+            a theme for any that belong and it adds them as keywords and
+            re-sorts every review.
+          </p>
+        </article>
+        <article class="card reveal" style="--d:.06s">
+          <span class="card-tag">Any language</span>
+          <h3>Other languages, counted</h3>
+          <p>
+            Each review's language is detected on the spot. Reviews the English
+            keywords cannot read are counted apart, never forced into a wrong
+            theme, and can be filtered out or sent to the model.
+          </p>
+        </article>
+        <article class="card reveal" style="--d:.12s">
+          <span class="card-tag">Month to month</span>
+          <h3>Track a brand over time</h3>
+          <p>
+            App stores only keep recent reviews, so the app saves one file with
+            every review so far and the approved themes. Load it next month and
+            see which themes grew or turned more negative.
+          </p>
+        </article>
+      </div>
+
       <div class="gallery">
         <figure class="reveal">
           <div class="shot">
@@ -436,8 +466,15 @@
 
       <ul class="stack reveal" aria-label="Built with">
         <li>Python</li><li>pandas</li><li>Plotly</li><li>scikit-learn</li>
-        <li>VADER</li><li>Streamlit</li><li>Gemini (optional)</li>
+        <li>VADER</li><li>langdetect</li><li>Streamlit</li><li>Gemini (optional)</li>
       </ul>
+
+      <p class="fineprint reveal">
+        Tests run on every change, and every Monday a check collects a sample from
+        each source and raises an alert if one stops returning reviews. Its first
+        run found that ConsumerAffairs blocks cloud servers, so that site only
+        works when you run the app on your own computer.
+      </p>
 
       <div class="cta-row reveal">
         <a class="btn btn-primary" href="https://voc-analyser.streamlit.app" target="_blank" rel="noopener">
