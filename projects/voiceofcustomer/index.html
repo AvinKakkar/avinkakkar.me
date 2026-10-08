@@ -309,10 +309,10 @@
     <div class="shell">
       <figure class="reveal shot-lead">
         <div class="shot">
-          <img src="app-report.webp" alt="The report for 1,593 Nike and Adidas reviews, classified by keywords alone: source and language filters, headline numbers (2.89 stars, 51% negative, 67% matched to a theme), a table of themes with share, average rating and sentiment, and the start of a sentiment chart."
-               width="2160" height="1265" loading="lazy" decoding="async">
+          <img src="app-report.webp" alt="The report for 1,593 Nike and Adidas reviews, classified by keywords alone: source and language filters, headline numbers (2.89 stars, 51% negative, 58% matched to a theme), a table of themes with share, average rating and sentiment, and a note that 154 reviews mention more than one theme."
+               width="2160" height="1289" loading="lazy" decoding="async">
         </div>
-        <figcaption>Every theme with its share, average rating and sentiment, placed by keywords with no AI. Filter the sources or languages and the whole report follows.</figcaption>
+        <figcaption>Every theme with its share, average rating and sentiment, placed by keywords with no AI. A review counts under every theme it mentions, so the shares add up to more than 100%.</figcaption>
       </figure>
 
       <div class="stats">
@@ -321,8 +321,8 @@
           <span class="stat-l">Reviews for one brand from six store apps, collected in about 20 seconds.</span>
         </div>
         <div class="stat reveal" style="--d:.06s">
-          <span class="stat-n">7</span>
-          <span class="stat-l">Ways in: two app stores, Sitejabber, PissedConsumer, Reddit, any page with review markup, and your own file.</span>
+          <span class="stat-n">9</span>
+          <span class="stat-l">Ways in: two app stores, Sitejabber, PissedConsumer, Reddit, Bluesky, YouTube comments, any page with review markup, and your own file.</span>
         </div>
         <div class="stat reveal" style="--d:.12s">
           <span class="stat-n">0</span>
@@ -348,8 +348,9 @@
           <h3>Sentiment from the stars</h3>
           <p>
             A one or two star review is negative and a four or five is positive.
-            Posts with no rating, such as Reddit threads, are scored by a
-            rule-based text scorer instead.
+            Posts with no rating, such as Reddit or Bluesky, and three star
+            reviews are scored by a rule-based text scorer, one theme's sentences
+            at a time, so "comfy shoes, awful delivery" is both.
           </p>
         </article>
         <article class="card reveal" style="--d:.06s">
@@ -365,21 +366,21 @@
           <span class="card-tag">Optional</span>
           <h3>AI for the leftovers</h3>
           <p>
-            Keywords place each review first. Only the reviews no keyword fits go
-            to the model, 80 at a time, and every row records which method
-            placed it.
+            Keywords place each review first, under every theme one of its
+            sentences mentions. Only the reviews no keyword fits go to the model,
+            80 at a time, and every row records which method placed it.
           </p>
         </article>
       </div>
 
       <figure class="reveal shot-lead">
         <div class="shot">
-          <img src="app-sentiment.webp" alt="A stacked bar chart of sentiment by theme. Returns, refunds and exchanges is the most negative theme at the top, positive experiences the least negative at the bottom."
+          <img src="app-sentiment.webp" alt="A stacked bar chart of sentiment by theme. Returns, refunds and exchanges is the most negative theme at the top, positive experiences and general feedback the least negative at the bottom."
                width="2160" height="1289" loading="lazy" decoding="async">
         </div>
         <figcaption>
           Sentiment by theme, sorted so the most negative theme sits at the top.
-          Here, <strong>returns and refunds</strong> is 96% negative across both brands.
+          Here, <strong>returns and refunds</strong> is 100% negative across both brands.
         </figcaption>
       </figure>
 
